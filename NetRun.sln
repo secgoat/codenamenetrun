@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRun", "NetRun\NetRun\NetRun.csproj", "{2D67822C-6E53-49FF-9E3B-C6074B82BC87}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "NetRunContent", "NetRun\NetRunContent\NetRunContent.contentproj", "{C57BD42D-CD61-47A6-B604-AA836B89D8B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuchsGUI", "..\..\..\Desktop\C#\FuchsGUI\FuchsGUI.csproj", "{37AD6EDD-3ECF-4082-9C65-888756F1DD39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D67822C-6E53-49FF-9E3B-C6074B82BC87}.Debug|x86.ActiveCfg = Debug|x86
+		{2D67822C-6E53-49FF-9E3B-C6074B82BC87}.Debug|x86.Build.0 = Debug|x86
+		{2D67822C-6E53-49FF-9E3B-C6074B82BC87}.Release|x86.ActiveCfg = Release|x86
+		{2D67822C-6E53-49FF-9E3B-C6074B82BC87}.Release|x86.Build.0 = Release|x86
+		{C57BD42D-CD61-47A6-B604-AA836B89D8B0}.Debug|x86.ActiveCfg = Debug|x86
+		{C57BD42D-CD61-47A6-B604-AA836B89D8B0}.Release|x86.ActiveCfg = Release|x86
+		{37AD6EDD-3ECF-4082-9C65-888756F1DD39}.Debug|x86.ActiveCfg = Debug|x86
+		{37AD6EDD-3ECF-4082-9C65-888756F1DD39}.Debug|x86.Build.0 = Debug|x86
+		{37AD6EDD-3ECF-4082-9C65-888756F1DD39}.Release|x86.ActiveCfg = Release|x86
+		{37AD6EDD-3ECF-4082-9C65-888756F1DD39}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
