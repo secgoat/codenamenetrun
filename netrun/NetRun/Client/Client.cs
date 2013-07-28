@@ -10,6 +10,7 @@ using Lidgren.Network.Xna;
 using Lidgren.Network;
 using Microsoft.Xna.Framework.Input;
 using System.Net;
+using NetRun.TileEngine;
 
 namespace NetRun.Client
 {
@@ -32,6 +33,12 @@ namespace NetRun.Client
             hosted
         };
         GameType gameType;
+
+
+        //variables for the tileengine
+        TileMap levelMap = new TileMap();
+        int squaresDown = 10;
+        int squaresAcross = 10;
 
         public List<IPEndPoint> ServerEndpoints {get; private set;}
 
@@ -82,6 +89,7 @@ namespace NetRun.Client
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            Tile.TileSetTexture = game.Content.Load<Texture2D>(@"tilesets\part2_tileset");
             textures = new Texture2D[5];
             for (int i = 0; i < 5; i++)
                 textures[i] = game.Content.Load<Texture2D>("c" + (i + 1));
@@ -128,6 +136,7 @@ namespace NetRun.Client
                 om.Write(xinput); // very inefficient to send a full Int32 (4 bytes) but we'll use this for simplicity
                 om.Write(yinput);
                 client.SendMessage(om, NetDeliveryMethod.Unreliable);
+                
             }
 
             // read messages
@@ -146,13 +155,23 @@ namespace NetRun.Client
                         long who = msg.ReadInt64();
                         int x = msg.ReadInt32();
                         int y = msg.ReadInt32();
+                       
                         positions[who] = new Vector2(x, y);
+                        CalculateCameraPos(x, y);
                         break;
                 }
             }
             base.Update(gameTime);
         }
 
+        void CalculateCameraPos(int playerX, int playerY)
+        {
+            //just for reminder Mathclamp keeps the first number between min (second number) and max (third number)
+            //this keeps the camera from goign off the map and keeps it centered on the player wehn they arent right on the edge.
+            Camera.Location.X = MathHelper.Clamp(playerX, 0, (levelMap.MapWidth - squaresAcross) * Tile.TileWidth);
+            Camera.Location.Y = MathHelper.Clamp(playerY, 0, (levelMap.MapHeight - squaresDown) * Tile.TileHeight);
+        
+        }
 
         public override void Draw(GameTime gameTime)
         {
@@ -160,17 +179,37 @@ namespace NetRun.Client
 
             //spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
 
-            // draw all players
-            foreach (var kvp in positions)
-            {
-                // use player unique identifier to choose an image
-                int num = Math.Abs((int)kvp.Key) % textures.Length;
+            //draw tileMap
+            Vector2 firstSquare = new Vector2(Camera.Location.X / Tile.TileWidth, Camera.Location.Y / Tile.TileHeight); 
+            int firstX = (int)firstSquare.X;
+            int firstY = (int)firstSquare.Y;
 
-                // draw player
-                spriteBatch.Draw(textures[num], kvp.Value, Color.White);
-                if(messages.Count > 0)
-                    spriteBatch.DrawString(font, messages[0], Vector2.One, Color.Black);
+            Vector2 squareOffset = new Vector2(Camera.Location.X % Tile.TileWidth, Camera.Location.Y % Tile.TileHeight);
+            int offsetX = (int)squareOffset.X;
+            int offsetY = (int)squareOffset.Y;
+
+            for (int y = 0; y < squaresDown; y++)
+            {
+                for (int x = 0; x < squaresDown; x++)
+                {
+                    spriteBatch.Draw(
+                        Tile.TileSetTexture,
+                        new Rectangle((x * Tile.TileWidth) - offsetX, (y * Tile.TileHeight) - offsetY, Tile.TileWidth, Tile.TileHeight),
+                        Tile.GetSourceRectangle(levelMap.Rows[y + firstY].Columns[x + firstX].TileID),
+                        Color.Wheat);
+                }
             }
+                // draw all players
+                foreach (var kvp in positions)
+                {
+                    // use player unique identifier to choose an image
+                    int num = Math.Abs((int)kvp.Key) % textures.Length;
+
+                    // draw player
+                    spriteBatch.Draw(textures[num], kvp.Value, Color.White);
+                    if (messages.Count > 0)
+                        spriteBatch.DrawString(font, messages[0], Vector2.One, Color.Black);
+                }
 
             //spriteBatch.End();
 

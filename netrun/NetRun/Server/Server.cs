@@ -92,6 +92,7 @@ namespace NetRun.Server
                         //
                         //the client sent input to thte server
                         //
+                        //TODO: right now I am just takignraw input from the players regarding POS and sending it bak out ot all others, I should be doing somehting with this here I am sure.
                         int xinput = message.ReadInt32();
                         int yinput = message.ReadInt32();
 
