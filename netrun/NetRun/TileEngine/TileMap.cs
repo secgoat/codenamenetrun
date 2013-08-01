@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NetRun.TileEngine;
 
-namespace NetRun.TileEngine
+namespace TileEngine
 {
     class MapRow
     {
@@ -69,25 +70,6 @@ namespace NetRun.TileEngine
             Rows[5].Columns[6].TileID = 2;
             Rows[5].Columns[7].TileID = 2;
 
-            // End Create Sample Map Data
-
-            /*
-             * tutorial 2 layered tiles
-            Rows[3].Columns[5].AddBaseTile(30);
-            Rows[4].Columns[5].AddBaseTile(27);
-            Rows[5].Columns[5].AddBaseTile(28);
-
-            Rows[3].Columns[6].AddBaseTile(25);
-            Rows[5].Columns[6].AddBaseTile(24);
-
-            Rows[3].Columns[7].AddBaseTile(31);
-            Rows[4].Columns[7].AddBaseTile(26);
-            Rows[5].Columns[7].AddBaseTile(29);
-
-            Rows[4].Columns[6].AddBaseTile(104);
-             */
-
-            //tutorial 4 height tiles
             Rows[16].Columns[4].AddHeightTile(54);
 
             Rows[17].Columns[3].AddHeightTile(54);
@@ -108,6 +90,27 @@ namespace NetRun.TileEngine
             Rows[14].Columns[5].AddHeightTile(62);
             Rows[14].Columns[5].AddHeightTile(61);
             Rows[14].Columns[5].AddHeightTile(63);
+
+            Rows[17].Columns[4].AddTopperTile(114);
+            Rows[16].Columns[5].AddTopperTile(115);
+            Rows[14].Columns[4].AddTopperTile(125);
+            Rows[15].Columns[5].AddTopperTile(91);
+            Rows[16].Columns[6].AddTopperTile(94);
+            
+
+            //Rows[3].Columns[5].AddBaseTile(30);
+            //Rows[4].Columns[5].AddBaseTile(27);
+            //Rows[5].Columns[5].AddBaseTile(28);
+
+            //Rows[3].Columns[6].AddBaseTile(25);
+            //Rows[5].Columns[6].AddBaseTile(24);
+
+            //Rows[3].Columns[7].AddBaseTile(31);
+            //Rows[4].Columns[7].AddBaseTile(26);
+            //Rows[5].Columns[7].AddBaseTile(29);
+
+            //Rows[4].Columns[6].AddBaseTile(104);
+            // End Create Sample Map Data
         }
     }
 }

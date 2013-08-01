@@ -11,6 +11,7 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework.Input;
 using System.Net;
 using NetRun.TileEngine;
+using TileEngine;
 
 namespace NetRun.Client
 {
@@ -61,6 +62,7 @@ namespace NetRun.Client
             this.address = address;
             this.port = port;
             this.gameType = gameType;
+
             config = new NetPeerConfiguration(configName);
             config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
             client = new NetClient(config);
@@ -97,7 +99,7 @@ namespace NetRun.Client
             textures = new Texture2D[5];
             for (int i = 0; i < 5; i++)
                 textures[i] = game.Content.Load<Texture2D>("c" + (i + 1));
-            font = game.Content.Load<SpriteFont>("font");
+            font = game.Content.Load<SpriteFont>("tinyFont");
         }
 
 
@@ -181,11 +183,7 @@ namespace NetRun.Client
         {
             GraphicsDevice.Clear(Color.Black);
 
-            float maxDepth = ((levelMap.MapWidth + 1) + ((levelMap.MapHeight + 1) * Tile.TileWidth)) / 10;
-            float depthOffset;
-
-            //draw tileMap
-            Vector2 firstSquare = new Vector2(Camera.Location.X / Tile.TileStepX, Camera.Location.Y / Tile.TileStepY); 
+            Vector2 firstSquare = new Vector2(Camera.Location.X / Tile.TileStepX, Camera.Location.Y / Tile.TileStepY);
             int firstX = (int)firstSquare.X;
             int firstY = (int)firstSquare.Y;
 
@@ -193,21 +191,25 @@ namespace NetRun.Client
             int offsetX = (int)squareOffset.X;
             int offsetY = (int)squareOffset.Y;
 
+            float maxdepth = ((levelMap.MapWidth + 1) * ((levelMap.MapHeight + 1) * Tile.TileWidth)) / 10;
+            float depthOffset;
+
             for (int y = 0; y < squaresDown; y++)
             {
                 int rowOffset = 0;
                 if ((firstY + y) % 2 == 1)
-                    rowOffset = Tile.OddRowOffset;
+                    rowOffset = Tile.OddRowXOffset;
 
-                for (int x = 0; x < squaresDown; x++)
+                for (int x = 0; x < squaresAcross; x++)
                 {
                     int mapx = (firstX + x);
                     int mapy = (firstY + y);
-                    depthOffset = 0.7f - ((mapx + (mapy * Tile.TileWidth)) / maxDepth);
+                    depthOffset = 0.7f - ((mapx + (mapy * Tile.TileWidth)) / maxdepth);
 
                     foreach (int tileID in levelMap.Rows[mapy].Columns[mapx].BaseTiles)
                     {
                         spriteBatch.Draw(
+
                             Tile.TileSetTexture,
                             new Rectangle(
                                 (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
@@ -222,6 +224,7 @@ namespace NetRun.Client
                     }
 
                     int heightRow = 0;
+
                     foreach (int tileID in levelMap.Rows[mapy].Columns[mapx].HeightTiles)
                     {
                         spriteBatch.Draw(
@@ -236,11 +239,32 @@ namespace NetRun.Client
                             Vector2.Zero,
                             SpriteEffects.None,
                             depthOffset - ((float)heightRow * heightRowDepthMod));
-
                         heightRow++;
                     }
+
+                    foreach (int tileID in levelMap.Rows[y + firstY].Columns[x + firstX].TopperTiles)
+                    {
+                        spriteBatch.Draw(
+                            Tile.TileSetTexture,
+                            new Rectangle(
+                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
+                                (y * Tile.TileStepY) - offsetY + baseOffsetY - (heightRow * Tile.HeightTileOffset),
+                                Tile.TileWidth, Tile.TileHeight),
+                            Tile.GetSourceRectangle(tileID),
+                            Color.White,
+                            0.0f,
+                            Vector2.Zero,
+                            SpriteEffects.None,
+                            depthOffset - ((float)heightRow * heightRowDepthMod));
+                    }
+
+                    /*spriteBatch.DrawString(font, (x + firstX).ToString() + ", " + (y + firstY).ToString(),
+                        new Vector2((x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX + 24,
+                            (y * Tile.TileStepY) - offsetY + baseOffsetY + 48), Color.White, 0f, Vector2.Zero,
+                            1.0f, SpriteEffects.None, 0.0f); */
                 }
             }
+                
                 // draw all players
                 foreach (var kvp in positions)
                 {
