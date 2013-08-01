@@ -37,8 +37,8 @@ namespace NetRun.Client
 
         //variables for the tileengine
         TileMap levelMap = new TileMap();
-        int squaresDown = 10;
-        int squaresAcross = 10;
+        int squaresDown = 18;
+        int squaresAcross = 11;
 
         public List<IPEndPoint> ServerEndpoints {get; private set;}
 
@@ -192,11 +192,14 @@ namespace NetRun.Client
             {
                 for (int x = 0; x < squaresDown; x++)
                 {
-                    spriteBatch.Draw(
-                        Tile.TileSetTexture,
-                        new Rectangle((x * Tile.TileWidth) - offsetX, (y * Tile.TileHeight) - offsetY, Tile.TileWidth, Tile.TileHeight),
-                        Tile.GetSourceRectangle(levelMap.Rows[y + firstY].Columns[x + firstX].TileID),
-                        Color.Wheat);
+                    foreach (int tileID in levelMap.Rows[y + firstY].Columns[x + firstX].BaseTiles)
+                    {
+                        spriteBatch.Draw(
+                            Tile.TileSetTexture,
+                            new Rectangle((x * Tile.TileWidth) - offsetX, (y * Tile.TileHeight) - offsetY, Tile.TileWidth, Tile.TileHeight),
+                            Tile.GetSourceRectangle(tileID),
+                            Color.Wheat);
+                    }
                 }
             }
                 // draw all players

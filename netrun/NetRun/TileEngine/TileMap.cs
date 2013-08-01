@@ -70,6 +70,19 @@ namespace NetRun.TileEngine
             Rows[5].Columns[7].TileID = 2;
 
             // End Create Sample Map Data
+
+            Rows[3].Columns[5].AddBaseTile(30);
+            Rows[4].Columns[5].AddBaseTile(27);
+            Rows[5].Columns[5].AddBaseTile(28);
+
+            Rows[3].Columns[6].AddBaseTile(25);
+            Rows[5].Columns[6].AddBaseTile(24);
+
+            Rows[3].Columns[7].AddBaseTile(31);
+            Rows[4].Columns[7].AddBaseTile(26);
+            Rows[5].Columns[7].AddBaseTile(29);
+
+            Rows[4].Columns[6].AddBaseTile(104);
         }
     }
 }
