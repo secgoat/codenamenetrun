@@ -16,6 +16,7 @@ using NetRun.Client;
 using FuchsGUI;
 using Lidgren.Network;
 using System.Threading;
+using NetRun.TileEngine;
 
 namespace NetRun
 {
@@ -29,6 +30,7 @@ namespace NetRun
 
         KeyboardState keyboardState;
         KeyboardState oldKeyboardState;
+
         //add the different screens you want here 
         StartScreen startScreen; //basic start menu / first screen they see
         NetworkGameSelectScreen networkScreen; //the screen / menu to choose to join or host a network game
@@ -113,15 +115,17 @@ namespace NetRun
             Components.Add(popUpScreen);
             popUpScreen.Hide();
 
-
-
             activeScreen = startScreen;
             //activeScreen = joinGameScreen;
             activeScreen.Show();
 
             IsMouseVisible = true;
-
-
+            
+            //set up the camera view size based of the graphics manager back buffer 
+            Camera.ViewWidth = this.graphics.PreferredBackBufferWidth;
+            Camera.ViewHeight = this.graphics.PreferredBackBufferHeight;
+            
+            
         }
 
 

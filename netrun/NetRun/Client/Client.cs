@@ -37,13 +37,16 @@ namespace NetRun.Client
 
 
         //variables for the tileengine
-        TileMap levelMap = new TileMap();
+        TileMap levelMap;
         int squaresDown = 37;
         int squaresAcross = 17;
 
         int baseOffsetX = 32;
         int baseOffsetY = -64;
         float heightRowDepthMod = 0.0000001f;
+
+        Texture2D hilight;
+        
 
         public List<IPEndPoint> ServerEndpoints {get; private set;}
 
@@ -96,10 +99,18 @@ namespace NetRun.Client
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             Tile.TileSetTexture = game.Content.Load<Texture2D>(@"tilesets\part4_tileset");
+            hilight = game.Content.Load<Texture2D>(@"tilesets\hilight");
             textures = new Texture2D[5];
             for (int i = 0; i < 5; i++)
                 textures[i] = game.Content.Load<Texture2D>("c" + (i + 1));
             font = game.Content.Load<SpriteFont>("tinyFont");
+
+            levelMap = new TileMap(game.Content.Load<Texture2D>(@"tilesets\mousemap"), hilight); 
+
+            //finish setting up the camera which was started in Game1.
+            Camera.WorldWidth = ((levelMap.MapWidth - 2) * Tile.TileStepX);
+            Camera.WorldHeight = ((levelMap.MapHeight - 2) * Tile.TileStepY);
+            Camera.DisplayOffset = new Vector2(baseOffsetX, baseOffsetY);
         }
 
 
@@ -125,13 +136,25 @@ namespace NetRun.Client
 
             // use arrows or dpad to move avatar
             if (GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed || keyState.IsKeyDown(Keys.Left))
+            {
                 xinput = -1;
+                Camera.Move(new Vector2(-2, 0));
+            }
             if (GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed || keyState.IsKeyDown(Keys.Right))
+            {
                 xinput = 1;
+                Camera.Move(new Vector2(2, 0));
+            }
             if (GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed || keyState.IsKeyDown(Keys.Up))
+            {
                 yinput = -1;
+                Camera.Move(new Vector2(0, -2));
+            }
             if (GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed || keyState.IsKeyDown(Keys.Down))
+            {
                 yinput = 1;
+                Camera.Move(new Vector2(0, 2));
+            }
 
             if (xinput != 0 || yinput != 0)
             {
@@ -163,7 +186,7 @@ namespace NetRun.Client
                         int y = msg.ReadInt32();
                        
                         positions[who] = new Vector2(x, y);
-                        CalculateCameraPos(x, y);
+                        //CalculateCameraPos(x, y);
                         break;
                 }
             }
@@ -172,11 +195,11 @@ namespace NetRun.Client
 
         void CalculateCameraPos(int playerX, int playerY)
         {
+            Camera.Move(new Vector2(playerX, playerY));
             //just for reminder Mathclamp keeps the first number between min (second number) and max (third number)
             //this keeps the camera from goign off the map and keeps it centered on the player wehn they arent right on the edge.
-            Camera.Location.X = MathHelper.Clamp(playerX, 0, (levelMap.MapWidth - squaresAcross) * Tile.TileWidth);
-            Camera.Location.Y = MathHelper.Clamp(playerY, 0, (levelMap.MapHeight - squaresDown) * Tile.TileHeight);
-        
+            //Camera.Location.X = MathHelper.Clamp(playerX, 0, (levelMap.MapWidth - squaresAcross) * Tile.TileWidth);
+            //Camera.Location.Y = MathHelper.Clamp(playerY, 0, (levelMap.MapHeight - squaresDown) * Tile.TileHeight);
         }
 
         public override void Draw(GameTime gameTime)
@@ -206,37 +229,39 @@ namespace NetRun.Client
                     int mapy = (firstY + y);
                     depthOffset = 0.7f - ((mapx + (mapy * Tile.TileWidth)) / maxdepth);
 
+                    if ((mapx >= levelMap.MapWidth) || (mapy >= levelMap.MapHeight))
+                        continue;
                     foreach (int tileID in levelMap.Rows[mapy].Columns[mapx].BaseTiles)
                     {
                         spriteBatch.Draw(
 
                             Tile.TileSetTexture,
-                            new Rectangle(
-                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
-                                (y * Tile.TileStepY) - offsetY + baseOffsetY,
-                                Tile.TileWidth, Tile.TileHeight),
+                            Camera.WorldToScreen(
+
+                                new Vector2((mapx * Tile.TileStepX) + rowOffset, mapy * Tile.TileStepY)),
                             Tile.GetSourceRectangle(tileID),
                             Color.White,
                             0.0f,
                             Vector2.Zero,
+                            1.0f,
                             SpriteEffects.None,
                             1.0f);
                     }
-
                     int heightRow = 0;
 
                     foreach (int tileID in levelMap.Rows[mapy].Columns[mapx].HeightTiles)
                     {
                         spriteBatch.Draw(
                             Tile.TileSetTexture,
-                            new Rectangle(
-                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
-                                (y * Tile.TileStepY) - offsetY + baseOffsetY - (heightRow * Tile.HeightTileOffset),
-                                Tile.TileWidth, Tile.TileHeight),
+                            Camera.WorldToScreen(
+                                new Vector2(
+                                    (mapx * Tile.TileStepX) + rowOffset,
+                                    mapy * Tile.TileStepY - (heightRow * Tile.HeightTileOffset))),
                             Tile.GetSourceRectangle(tileID),
                             Color.White,
                             0.0f,
                             Vector2.Zero,
+                            1.0f,
                             SpriteEffects.None,
                             depthOffset - ((float)heightRow * heightRowDepthMod));
                         heightRow++;
@@ -246,38 +271,53 @@ namespace NetRun.Client
                     {
                         spriteBatch.Draw(
                             Tile.TileSetTexture,
-                            new Rectangle(
-                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
-                                (y * Tile.TileStepY) - offsetY + baseOffsetY - (heightRow * Tile.HeightTileOffset),
-                                Tile.TileWidth, Tile.TileHeight),
+                            Camera.WorldToScreen(
+
+                                new Vector2((mapx * Tile.TileStepX) + rowOffset, mapy * Tile.TileStepY)),
                             Tile.GetSourceRectangle(tileID),
                             Color.White,
                             0.0f,
                             Vector2.Zero,
+                            1.0f,
                             SpriteEffects.None,
                             depthOffset - ((float)heightRow * heightRowDepthMod));
                     }
-
-                    /*spriteBatch.DrawString(font, (x + firstX).ToString() + ", " + (y + firstY).ToString(),
-                        new Vector2((x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX + 24,
-                            (y * Tile.TileStepY) - offsetY + baseOffsetY + 48), Color.White, 0f, Vector2.Zero,
-                            1.0f, SpriteEffects.None, 0.0f); */
+                   
                 }
             }
                 
-                // draw all players
-                foreach (var kvp in positions)
-                {
-                    // use player unique identifier to choose an image
-                    int num = Math.Abs((int)kvp.Key) % textures.Length;
+            // draw all players
+            foreach (var kvp in positions)
+            {
+                // use player unique identifier to choose an image
+                int num = Math.Abs((int)kvp.Key) % textures.Length;
 
-                    // draw player
-                    spriteBatch.Draw(textures[num], kvp.Value, Color.White);
-                    if (messages.Count > 0)
-                        spriteBatch.DrawString(font, messages[0], Vector2.One, Color.Black, 0.0f, Vector2.Zero, new Vector2(1,1), SpriteEffects.None, 1.0f);
-                }
+                // draw player
+                spriteBatch.Draw(textures[num], kvp.Value, Color.White);
+                if (messages.Count > 0)
+                    spriteBatch.DrawString(font, messages[0], Vector2.One, Color.Black, 0.0f, Vector2.Zero, new Vector2(1,1), SpriteEffects.None, 1.0f);
+            }
 
-            //spriteBatch.End();
+            Vector2 hilightLoc = Camera.ScreenToWorld(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+            Point hilightPoint = levelMap.WorldToMapCell(new Point((int)hilightLoc.X, (int)hilightLoc.Y));
+
+            int hilightrowOffset = 0;
+            if ((hilightPoint.Y) % 2 == 1)
+                hilightrowOffset = Tile.OddRowXOffset;
+
+            spriteBatch.Draw(
+                            hilight,
+                            Camera.WorldToScreen(
+                                new Vector2(
+                                    (hilightPoint.X * Tile.TileStepX) + hilightrowOffset,
+                                    (hilightPoint.Y + 2) * Tile.TileStepY)),
+                            new Rectangle(0, 0, 64, 32),
+                            Color.White * 0.3f,
+                            0.0f,
+                            Vector2.Zero,
+                            1.0f,
+                            SpriteEffects.None,
+                            0.0f);
 
             base.Draw(gameTime);
         }
