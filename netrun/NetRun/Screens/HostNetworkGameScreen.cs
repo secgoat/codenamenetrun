@@ -37,8 +37,9 @@ namespace NetRun.Screens
             : base(game, spriteBatch)
         {
             
-            this.background = background;
-            formBackground = game.Content.Load<Texture2D>("alienmetal");
+            //this.background = background;
+            //formBackground = game.Content.Load<Texture2D>("alienmetal");
+            formBackground = null;
             buttonTexture = game.Content.Load<Texture2D>("buttonTexture");
             textboxTexture = game.Content.Load<Texture2D>("textboxTexture");
 
@@ -88,7 +89,6 @@ namespace NetRun.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(background, imageRectangle, Color.White);
             hostGameForm.Draw(spriteBatch);
             base.Draw(gameTime);
         }

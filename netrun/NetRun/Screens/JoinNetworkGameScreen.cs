@@ -38,7 +38,7 @@ namespace NetRun.Screens
             : base(game, spriteBatch)
         {
             this.background = background;
-            formBackground = game.Content.Load<Texture2D>("alienmetal");
+            //formBackground = game.Content.Load<Texture2D>("alienmetal");
             buttonTexture = game.Content.Load<Texture2D>("buttonTexture");
             textboxTexture = game.Content.Load<Texture2D>("textboxTexture");
 
@@ -89,13 +89,8 @@ namespace NetRun.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(background, imageRectangle, Color.White);
+            //spriteBatch.Draw(background, imageRectangle, Color.White);
             connectionMethodForm.Draw(spriteBatch);
-            //lanButton.Draw(spriteBatch);
-            //sendButton.Draw(spriteBatch);
-            //textBoxIP.Draw(spriteBatch);
-            //textBoxPort.Draw(spriteBatch);
-
             base.Draw(gameTime);
         }
 

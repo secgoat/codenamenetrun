@@ -24,7 +24,8 @@ namespace NetRun.Screens
         public NetworkGameSelectScreen(Game game, SpriteBatch spriteBatch, SpriteFont spriteFont, Texture2D backgorund)
             : base(game, spriteBatch)
         {
-            formBackground = game.Content.Load<Texture2D>("alienmetal");
+            //formBackground = game.Content.Load<Texture2D>("alienmetal");
+            
             buttonTexture = game.Content.Load<Texture2D>("buttonTexture");
 
             Rectangle formLocation = CenterGUIForm(150, 200);

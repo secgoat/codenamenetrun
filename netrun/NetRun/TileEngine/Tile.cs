@@ -9,12 +9,14 @@ namespace NetRun.TileEngine
 {
     static class Tile
     {
-        static public int TileWidth = 33;
-        static public int TileHeight = 27;
+        static public int TileWidth = 64;
+        static public int TileHeight = 64;
 
-        static public int TileStepX = 52;
-        static public int TileStepY = 14;
-        static public int OddRowOffset = 26;
+        static public int TileStepX = 64;
+        static public int TileStepY = 16;
+
+        static public int OddRowOffset = 32;
+        static public int HeightTileOffset = 32;
 
         static public Texture2D TileSetTexture;
 

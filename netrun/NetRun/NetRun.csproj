@@ -140,7 +140,7 @@
     <Content Include="Lidgren.Network.Xna.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Desktop\C#\FuchsGUI\FuchsGUI.csproj">
+    <ProjectReference Include="..\..\FuchsGUI\FuchsGUI.csproj">
       <Project>{37AD6EDD-3ECF-4082-9C65-888756F1DD39}</Project>
       <Name>FuchsGUI</Name>
     </ProjectReference>

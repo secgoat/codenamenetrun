@@ -30,7 +30,8 @@ namespace NetRun.Screens
         {
 
             Rectangle formLocation = CenterGUIForm(150, 200);
-            formBackground = game.Content.Load<Texture2D>("alienmetal");
+            formBackground = null;
+            //formBackground = game.Content.Load<Texture2D>("alienmetal");
             buttonTexture = game.Content.Load<Texture2D>("buttonTexture");
             
             mainMenuForm = new Form("MainMenu", "Main Menu", formLocation, formBackground, spriteFont, Color.White);

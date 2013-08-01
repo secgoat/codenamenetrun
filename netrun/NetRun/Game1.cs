@@ -90,7 +90,7 @@ namespace NetRun
             startScreen.ButtonClicked += new StartScreen.ClickEvent(HandleStartScreenButtons);
             startScreen.Hide();
 
-            networkScreen = new NetworkGameSelectScreen(this, spriteBatch, spriteFont, blankBlackTexture);
+            networkScreen = new NetworkGameSelectScreen(this, spriteBatch, formFont, blankBlackTexture);
             Components.Add(networkScreen);
             networkScreen.ButtonClicked += new NetworkGameSelectScreen.ClickEvent(HandleNetworkSelectScreenButtons);
             networkScreen.Hide();
@@ -168,7 +168,7 @@ namespace NetRun
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend); // draw sprites form back (1.0f) to front (0.0f)
             base.Draw(gameTime);
             spriteBatch.End();
         }

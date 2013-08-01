@@ -40,8 +40,9 @@ namespace NetRun.Client
         int squaresDown = 37;
         int squaresAcross = 17;
 
-        int baseOffsetX = -14;
-        int baseOffsetY = -14;
+        int baseOffsetX = 32;
+        int baseOffsetY = -64;
+        float heightRowDepthMod = 0.0000001f;
 
         public List<IPEndPoint> ServerEndpoints {get; private set;}
 
@@ -92,7 +93,7 @@ namespace NetRun.Client
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            Tile.TileSetTexture = game.Content.Load<Texture2D>(@"tilesets\part3_tileset");
+            Tile.TileSetTexture = game.Content.Load<Texture2D>(@"tilesets\part4_tileset");
             textures = new Texture2D[5];
             for (int i = 0; i < 5; i++)
                 textures[i] = game.Content.Load<Texture2D>("c" + (i + 1));
@@ -178,9 +179,10 @@ namespace NetRun.Client
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            //spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
+            float maxDepth = ((levelMap.MapWidth + 1) + ((levelMap.MapHeight + 1) * Tile.TileWidth)) / 10;
+            float depthOffset;
 
             //draw tileMap
             Vector2 firstSquare = new Vector2(Camera.Location.X / Tile.TileStepX, Camera.Location.Y / Tile.TileStepY); 
@@ -199,7 +201,11 @@ namespace NetRun.Client
 
                 for (int x = 0; x < squaresDown; x++)
                 {
-                    foreach (int tileID in levelMap.Rows[y + firstY].Columns[x + firstX].BaseTiles)
+                    int mapx = (firstX + x);
+                    int mapy = (firstY + y);
+                    depthOffset = 0.7f - ((mapx + (mapy * Tile.TileWidth)) / maxDepth);
+
+                    foreach (int tileID in levelMap.Rows[mapy].Columns[mapx].BaseTiles)
                     {
                         spriteBatch.Draw(
                             Tile.TileSetTexture,
@@ -208,7 +214,30 @@ namespace NetRun.Client
                                 (y * Tile.TileStepY) - offsetY + baseOffsetY,
                                 Tile.TileWidth, Tile.TileHeight),
                             Tile.GetSourceRectangle(tileID),
-                            Color.Wheat);
+                            Color.White,
+                            0.0f,
+                            Vector2.Zero,
+                            SpriteEffects.None,
+                            1.0f);
+                    }
+
+                    int heightRow = 0;
+                    foreach (int tileID in levelMap.Rows[mapy].Columns[mapx].HeightTiles)
+                    {
+                        spriteBatch.Draw(
+                            Tile.TileSetTexture,
+                            new Rectangle(
+                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
+                                (y * Tile.TileStepY) - offsetY + baseOffsetY - (heightRow * Tile.HeightTileOffset),
+                                Tile.TileWidth, Tile.TileHeight),
+                            Tile.GetSourceRectangle(tileID),
+                            Color.White,
+                            0.0f,
+                            Vector2.Zero,
+                            SpriteEffects.None,
+                            depthOffset - ((float)heightRow * heightRowDepthMod));
+
+                        heightRow++;
                     }
                 }
             }
@@ -221,7 +250,7 @@ namespace NetRun.Client
                     // draw player
                     spriteBatch.Draw(textures[num], kvp.Value, Color.White);
                     if (messages.Count > 0)
-                        spriteBatch.DrawString(font, messages[0], Vector2.One, Color.Black);
+                        spriteBatch.DrawString(font, messages[0], Vector2.One, Color.Black, 0.0f, Vector2.Zero, new Vector2(1,1), SpriteEffects.None, 1.0f);
                 }
 
             //spriteBatch.End();

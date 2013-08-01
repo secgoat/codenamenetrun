@@ -33,7 +33,7 @@ namespace NetRun.Screens
         }
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(image, imageRectangle, Color.White);
+           // spriteBatch.Draw(image, imageRectangle, Color.White);
             
             base.Draw(gameTime);
         }

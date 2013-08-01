@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRun", "NetRun\NetRun\NetRun.csproj", "{2D67822C-6E53-49FF-9E3B-C6074B82BC87}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "NetRunContent", "NetRun\NetRunContent\NetRunContent.contentproj", "{C57BD42D-CD61-47A6-B604-AA836B89D8B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRunContent", "NetRun\NetRunContent\NetRunContent.contentproj", "{C57BD42D-CD61-47A6-B604-AA836B89D8B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuchsGUI", "..\..\..\Desktop\C#\FuchsGUI\FuchsGUI.csproj", "{37AD6EDD-3ECF-4082-9C65-888756F1DD39}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuchsGUI", "FuchsGUI\FuchsGUI.csproj", "{37AD6EDD-3ECF-4082-9C65-888756F1DD39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
