@@ -71,6 +71,8 @@ namespace NetRun.TileEngine
 
             // End Create Sample Map Data
 
+            /*
+             * tutorial 2 layered tiles
             Rows[3].Columns[5].AddBaseTile(30);
             Rows[4].Columns[5].AddBaseTile(27);
             Rows[5].Columns[5].AddBaseTile(28);
@@ -83,6 +85,7 @@ namespace NetRun.TileEngine
             Rows[5].Columns[7].AddBaseTile(29);
 
             Rows[4].Columns[6].AddBaseTile(104);
+             */
         }
     }
 }

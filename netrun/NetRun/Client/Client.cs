@@ -37,8 +37,11 @@ namespace NetRun.Client
 
         //variables for the tileengine
         TileMap levelMap = new TileMap();
-        int squaresDown = 18;
-        int squaresAcross = 11;
+        int squaresDown = 37;
+        int squaresAcross = 17;
+
+        int baseOffsetX = -14;
+        int baseOffsetY = -14;
 
         public List<IPEndPoint> ServerEndpoints {get; private set;}
 
@@ -89,7 +92,7 @@ namespace NetRun.Client
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            Tile.TileSetTexture = game.Content.Load<Texture2D>(@"tilesets\part2_tileset");
+            Tile.TileSetTexture = game.Content.Load<Texture2D>(@"tilesets\part3_tileset");
             textures = new Texture2D[5];
             for (int i = 0; i < 5; i++)
                 textures[i] = game.Content.Load<Texture2D>("c" + (i + 1));
@@ -180,23 +183,30 @@ namespace NetRun.Client
             //spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
 
             //draw tileMap
-            Vector2 firstSquare = new Vector2(Camera.Location.X / Tile.TileWidth, Camera.Location.Y / Tile.TileHeight); 
+            Vector2 firstSquare = new Vector2(Camera.Location.X / Tile.TileStepX, Camera.Location.Y / Tile.TileStepY); 
             int firstX = (int)firstSquare.X;
             int firstY = (int)firstSquare.Y;
 
-            Vector2 squareOffset = new Vector2(Camera.Location.X % Tile.TileWidth, Camera.Location.Y % Tile.TileHeight);
+            Vector2 squareOffset = new Vector2(Camera.Location.X % Tile.TileStepX, Camera.Location.Y % Tile.TileStepY);
             int offsetX = (int)squareOffset.X;
             int offsetY = (int)squareOffset.Y;
 
             for (int y = 0; y < squaresDown; y++)
             {
+                int rowOffset = 0;
+                if ((firstY + y) % 2 == 1)
+                    rowOffset = Tile.OddRowOffset;
+
                 for (int x = 0; x < squaresDown; x++)
                 {
                     foreach (int tileID in levelMap.Rows[y + firstY].Columns[x + firstX].BaseTiles)
                     {
                         spriteBatch.Draw(
                             Tile.TileSetTexture,
-                            new Rectangle((x * Tile.TileWidth) - offsetX, (y * Tile.TileHeight) - offsetY, Tile.TileWidth, Tile.TileHeight),
+                            new Rectangle(
+                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
+                                (y * Tile.TileStepY) - offsetY + baseOffsetY,
+                                Tile.TileWidth, Tile.TileHeight),
                             Tile.GetSourceRectangle(tileID),
                             Color.Wheat);
                     }
